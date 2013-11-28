@@ -84,15 +84,14 @@ void *xrealloc(void *ptr, size_t size)
     return mem;
 }
 
-static char * mm_strdup(const char * str){
-  size_t len = strlen(str);
-  char * p = xmalloc(len + 1);
-  memcpy(p, str, len);
-  p[len] = 0;
-  return p;
+char * xstrdup(const char * str)
+{
+    size_t len = strlen(str);
+    char * p = xmalloc(len + 1);
+    memcpy(p, str, len);
+    p[len] = 0;
+    return p;
 }
-
-#define strdup mm_strdup
 
 static void usage(void)
 {
@@ -123,13 +122,13 @@ int parse_opts(geoipupdate_s * gu, int argc, char *const argv[])
             break;
         case 'd':
             free(gu->database_dir);
-            gu->database_dir = strdup(optarg);
+            gu->database_dir = xstrdup(optarg);
             // The database directory in the config file is ignored if we use -d
             gu->do_not_overwrite_database_directory = 1;
             break;
         case 'f':
             free(gu->license_file);
-            gu->license_file = strdup(optarg);
+            gu->license_file = xstrdup(optarg);
             break;
         case 'h':
         default:
@@ -217,7 +216,7 @@ int parse_license_file(geoipupdate_s * up)
                                           || !strcmp(p, "https")),
                             "Protocol must be http or https\n");
                 free(up->proto);
-                up->proto = strdup(p);
+                up->proto = xstrdup(p);
             } else if (!strcmp(p, "SkipHostnameVerification")) {
                 p = strtok_r(NULL, sep, &last);
                 exit_unless(p != NULL
@@ -228,27 +227,27 @@ int parse_license_file(geoipupdate_s * up)
                 p = strtok_r(NULL, sep, &last);
                 exit_unless(p != NULL, "Host must be defined\n");
                 free(up->host);
-                up->host = strdup(p);
+                up->host = xstrdup(p);
             } else if (!strcmp(p, "DatabaseDirectory")) {
                 if (!up->do_not_overwrite_database_directory) {
                     p = strtok_r(NULL, sep, &last);
                     exit_unless(p != NULL,
                                 "DatabaseDirectory must be defined\n");
                     free(up->database_dir);
-                    up->database_dir = strdup(p);
+                    up->database_dir = xstrdup(p);
                 }
             } else if (!strcmp(p, "Proxy")) {
                 p = strtok_r(NULL, sep, &last);
                 exit_unless(p != NULL,
                             "Proxy must be defined 1.2.3.4:12345\n");
                 free(up->proxy);
-                up->proxy = strdup(p);
+                up->proxy = xstrdup(p);
             } else if (!strcmp(p, "ProxyUserPassword")) {
                 p = strtok_r(NULL, sep, &last);
                 exit_unless(p != NULL,
                             "ProxyUserPassword must be defined xyz:abc\n");
                 free(up->proxy_user_password);
-                up->proxy_user_password = strdup(p);
+                up->proxy_user_password = xstrdup(p);
             }
         }
     }
@@ -419,7 +418,7 @@ static void update_database_general(geoipupdate_s * gu, const char *product_id)
     xasprintf(&url, "%s://%s/app/update_getipaddr", gu->proto, gu->host);
     mem = get(gu, url);
     free(url);
-    client_ipaddr = strdup(mem->ptr);
+    client_ipaddr = xstrdup(mem->ptr);
     in_mem_s_delete(mem);
 
     say_if(gu->verbose, "Client IP address: %s\n", client_ipaddr);

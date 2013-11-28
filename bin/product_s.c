@@ -38,7 +38,7 @@ void product_insert_once(geoipupdate_s * gu, const char *product_id)
 product_s *product_new(const char *product_id)
 {
     product_s *p = xmalloc(sizeof(product_s));
-    p->product_id = strdup(product_id);
+    p->product_id = xstrdup(product_id);
     p->next = NULL;
     return p;
 }

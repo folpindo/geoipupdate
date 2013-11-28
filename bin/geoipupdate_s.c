@@ -8,12 +8,12 @@ geoipupdate_s *geoipupdate_s_new(void)
     size_t size = sizeof(geoipupdate_s);
     geoipupdate_s *gu = xmalloc(size);
     memset(gu, 0, size);
-    gu->license_file = strdup(SYSCONFDIR "/GeoIP.conf");
-    gu->database_dir = strdup(DATADIR);
-    gu->proto = strdup("https");
-    gu->host = strdup("updates.maxmind.com");
-    gu->proxy = strdup("");
-    gu->proxy_user_password = strdup("");
+    gu->license_file = xstrdup(SYSCONFDIR "/GeoIP.conf");
+    gu->database_dir = xstrdup(DATADIR);
+    gu->proto = xstrdup("https");
+    gu->host = xstrdup("updates.maxmind.com");
+    gu->proxy = xstrdup("");
+    gu->proxy_user_password = xstrdup("");
     gu->verbose = 0;
     gu->license.user_id = NO_USER_ID;
     gu->license.license_key[12] = 0;
