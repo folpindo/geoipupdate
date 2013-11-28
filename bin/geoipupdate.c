@@ -84,6 +84,16 @@ void *xrealloc(void *ptr, size_t size)
     return mem;
 }
 
+static char * mm_strdup(const char * str){
+  size_t len = strlen(str);
+  char * p = xmalloc(len + 1);
+  memcpy(p, str, len);
+  p[len] = 0;
+  return p;
+}
+
+#define strdup mm_strdup
+
 static void usage(void)
 {
     fprintf(
